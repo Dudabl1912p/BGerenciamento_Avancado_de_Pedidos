@@ -1,0 +1,53 @@
+﻿@using GerenciarProdutos.Models
+@using GerenciarProdutos.Services
+@inject ProdutoService ProdutoService
+
+<EditForm Model="novoItem" OnValidSubmit="Adicionar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row g-2">
+        <div class="col-md-6">
+            <label>Produto</label>
+            <select class="form-select" @bind="novoItem.ProdutoId">
+                <option value="">Selecione</option>
+                @foreach (var produto in produtos)
+                {
+                    <option value="@produto.Id">@produto.Nome</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label>Quantidade</label>
+            <InputNumber class="form-control" @bind-Value="novoItem.Quantidade" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success">Adicionar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private ItemPedido novoItem = new();
+    private List<Produto> produtos;
+
+    [Parameter] public EventCallback<ItemPedido> OnAdicionar { get; set; }
+    [Parameter] public EventCallback OnCancelar { get; set; }
+
+    protected override void OnInitialized()
+    {
+        produtos = ProdutoService.ObterTodosProdutos();
+    }
+
+    private async Task Adicionar()
+    {
+        novoItem.Produto = ProdutoService.ObterProdutoPorId(novoItem.ProdutoId);
+
+        if (novoItem.Produto != null)
+        {
+            await OnAdicionar.InvokeAsync(novoItem);
+            novoItem = new ItemPedido(); // reseta o formulário
+        }
+    }
+}
+

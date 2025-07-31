@@ -1,0 +1,36 @@
+﻿@if (Visible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmação</h5>
+                </div>
+                <div class="modal-body">
+                    <p>@Mensagem</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" @onclick="Confirmar">Confirmar</button>
+                    <button class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Mensagem { get; set; } = "Tem certeza que deseja continuar?";
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> OnConfirmacao { get; set; }
+
+    private async Task Confirmar()
+    {
+        await OnConfirmacao.InvokeAsync(true);
+    }
+
+    private async Task Cancelar()
+    {
+        await OnConfirmacao.InvokeAsync(false);
+    }
+}
+

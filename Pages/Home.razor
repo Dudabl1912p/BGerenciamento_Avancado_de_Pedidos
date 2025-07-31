@@ -1,0 +1,121 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apresentação - Gerenciamento Avançado de Pedidos no Blazor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #222;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #005f73;
+        }
+        ul {
+            margin-top: 0;
+        }
+
+        #sec {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Atividade Prática – Gerenciamento Avançado de Pedidos no Blazor</h1>
+
+    <section id="sec">
+        <h2>Informações Gerais</h2>
+        <p><strong>Semanas:</strong> 6</p>
+        <p><strong>Modalidade:</strong> Trabalho em dupla ou individual</p>
+        <p><strong>Alunos:</strong> Eduarda de Oliveira e Lucas Eller</p>
+        <p><strong>Turma:</strong> 3C2</p>
+        <p><strong>Tema:</strong> Comunicação entre Componentes (Bidirecional), Ciclo de Vida Avançado, Injeção de Dependência, Validação de Formulários e Boas Práticas de Arquitetura.</p>
+    </section>
+
+    <section id="sec">
+        <h2>Objetivo</h2>
+        <p>Desenvolver uma aplicação Blazor para o gerenciamento de pedidos, com as seguintes funcionalidades:</p>
+        <ul>
+            <li>Adicionar, editar e visualizar pedidos com múltiplos itens.</li>
+            <li>Gerenciar clientes associados aos pedidos.</li>
+            <li>Remover pedidos e itens de pedido em tempo real.</li>
+            <li>Comunicação complexa entre componentes (Pai ↔ Filho ↔ Neto).</li>
+            <li>Utilizar métodos do ciclo de vida para otimização de performance.</li>
+            <li>Implementar validação robusta de formulários.</li>
+            <li>Praticar boas práticas de arquitetura e organização com serviços.</li>
+        </ul>
+    </section>
+
+    <section id="sec">
+        <h2>Requisitos do Sistema</h2>
+
+        <h3>1. Classes de Modelo</h3>
+        <ul>
+            <li><code>Cliente.cs</code>: <code>Id</code>, <code>Nome</code>, <code>Email</code>.</li>
+            <li><code>Produto.cs</code>: <code>Id</code>, <code>Nome</code>, <code>Preço</code>, <code>Categoria</code>.</li>
+            <li><code>ItemPedido.cs</code>: <code>Id</code>, <code>Produto</code>, <code>Quantidade</code>, <code>Subtotal</code>.</li>
+            <li><code>Pedido.cs</code>: <code>Id</code>, <code>Cliente</code>, <code>DataPedido</code>, lista de <code>Itens</code>, <code>Total</code>, <code>Status</code>.</li>
+        </ul>
+
+        <h3>2. Serviços (Injeção de Dependência)</h3>
+        <ul>
+            <li><code>PedidoService</code>: Gerencia pedidos (adicionar, atualizar, remover, obter).</li>
+            <li><code>ClienteService</code>: Gerencia clientes.</li>
+            <li><code>ProdutoService</code>: Gerencia produtos (lista pré-definida).</li>
+        </ul>
+
+        <h3>3. Componentes Obrigatórios</h3>
+        <ul>
+            <li><code>Pages/GerenciarPedidos.razor</code>: Página principal com lista de pedidos e botões para operações.</li>
+            <li><code>Shared/FormularioPedido.razor</code>: Formulário para adicionar/editar pedidos, com dropdown de clientes e lista de itens.</li>
+            <li><code>Shared/ListaItensPedido.razor</code>: Exibe itens do pedido, permite adicionar e remover.</li>
+            <li><code>Shared/FormularioItemPedido.razor</code>: Formulário para adicionar/editar itens, com dropdown de produtos e campo quantidade.</li>
+            <li><code>Shared/CardPedido.razor</code>: Cartão resumido de pedido com botões para editar e remover.</li>
+        </ul>
+    </section>
+
+    <section id="sec">
+        <h2>Desafios</h2>
+        <ul>
+            <li>Validação robusta nos formulários usando <code>DataAnnotations</code>.</li>
+            <li>Comunicação bidirecional complexa entre componentes.</li>
+            <li>Otimização do ciclo de vida com métodos como <code>ShouldRender</code> e <code>OnParametersSetAsync</code>.</li>
+            <li>Implementar filtro e paginação na lista de pedidos.</li>
+            <li>Mensagens de feedback para operações (sucesso/erro).</li>
+            <li>Componente modal genérico para confirmação de remoção.</li>
+        </ul>
+    </section>
+
+    <section id="sec">
+        <h2>Organização do Projeto</h2>
+        <ul>
+            <li><code>Pages/GerenciarPedidos.razor</code></li>
+            <li>Componentes na pasta <code>Shared/</code> (Formulários, listas, cartões, modal)</li>
+            <li>Modelos em <code>Models/</code></li>
+            <li>Serviços em <code>Services/</code> (PedidoService, ClienteService, ProdutoService, NotificationService)</li>
+            <li>Uso claro de <code>[Parameter]</code> e <code>EventCallback</code> para comunicação entre componentes.</li>
+            <li>Injeção de dependência configurada em <code>Program.cs</code>.</li>
+            <li>Validação de formulários usando <code>EditForm</code> e <code>DataAnnotationsValidator</code>.</li>
+        </ul>
+    </section>
+
+</body>
+</html>
+

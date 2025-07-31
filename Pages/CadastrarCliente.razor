@@ -1,0 +1,44 @@
+﻿@page "/cadastrar-cliente"
+@using GerenciarProdutos.Models
+@using GerenciarProdutos.Services
+@inject ClienteService ClienteService
+@inject NavigationManager NavigationManager
+
+<h3>Cadastro de Cliente</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Salvar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Nome</label>
+        <InputText class="form-control" @bind-Value="cliente.Nome" />
+        <ValidationMessage For="@(() => cliente.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="cliente.Email" />
+        <ValidationMessage For="@(() => cliente.Email)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</EditForm>
+
+@if (mensagem != null)
+{
+    <div class="alert alert-success mt-3">@mensagem</div>
+}
+
+@code {
+    private Cliente cliente = new();
+    private string mensagem;
+
+    private async Task Salvar()
+    {
+        await ClienteService.AdicionarClienteAsync(cliente);
+        mensagem = $"Cliente {cliente.Nome} cadastrado com sucesso!";
+        cliente = new(); // limpa o formulário
+    }
+}
+

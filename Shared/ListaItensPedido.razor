@@ -1,0 +1,40 @@
+﻿@using GerenciarProdutos.Models
+
+
+<h5>Itens do Pedido</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Subtotal</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Itens)
+        {
+            <tr>
+                <td>@(item.Produto?.Nome ?? "Produto não encontrado")</td>
+                <td>@item.Quantidade</td>
+                <td>@item.Subtotal.ToString("C")</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" @onclick="() => OnItemRemovido.InvokeAsync(item)">Remover</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<FormularioItemPedido OnAdicionar="OnAdicionarItem" OnCancelar="()=>{}" />
+
+<p class="fw-bold">Total: @Itens.Sum(i => i.Subtotal).ToString("C")</p>
+
+@code {
+    [Parameter] public List<ItemPedido> Itens { get; set; }
+
+    [Parameter] public EventCallback<ItemPedido> OnItemRemovido { get; set; }
+    [Parameter] public EventCallback<ItemPedido> OnAdicionarItem { get; set; }
+}
+

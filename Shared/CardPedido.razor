@@ -1,0 +1,23 @@
+﻿@using GerenciarProdutos.Models
+
+<div class="card mb-2">
+    <div class="card-body">
+        <h5 class="card-title">Pedido #@Pedido.Id - @Pedido.Cliente?.Nome</h5>
+        <p class="card-text">
+            Data: @Pedido.DataPedido.ToShortDateString()<br />
+            Total: @Pedido.Total.ToString("C")<br />
+            Status: @Pedido.Status
+        </p>
+        <button class="btn btn-sm btn-primary me-2" @onclick="() => OnEditar.InvokeAsync(Pedido)">Editar</button>
+        <button class="btn btn-sm btn-danger" @onclick="() => OnRemover.InvokeAsync(Pedido.Id)">Remover</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Pedido Pedido { get; set; }
+
+    [Parameter] public EventCallback<Pedido> OnEditar { get; set; }
+
+    [Parameter] public EventCallback<int> OnRemover { get; set; }  @* Corrigido para aceitar ID *@
+}
+

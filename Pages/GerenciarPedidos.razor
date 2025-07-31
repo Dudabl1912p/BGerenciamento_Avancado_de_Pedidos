@@ -1,0 +1,143 @@
+﻿@using GerenciarProdutos.Services
+@using GerenciarProdutos.Models
+@using GerenciarProdutos.Shared
+
+@page "/gerenciar-pedidos"
+@inject PedidoService PedidoService
+@inject ClienteService ClienteService
+@inject ProdutoService ProdutoService
+
+<h3>Gerenciamento de Pedidos</h3>
+
+@if (!string.IsNullOrEmpty(MensagemNotificacao))
+{
+    <NotificationDisplay Mensagem="@MensagemNotificacao" />
+}
+
+<button class="btn btn-primary mb-3" @onclick="CriarNovoPedido">Novo Pedido</button>
+
+@if (ExibirFormulario)
+{
+    <FormularioPedido Pedido="PedidoEmEdicao"
+                     Clientes="Clientes"
+                     Produtos="Produtos"
+                     OnSalvar="SalvarPedido"
+                     OnCancelar="CancelarEdicao" />
+}
+else
+{
+    @if (Pedidos is null || Pedidos.Count == 0)
+    {
+        <p>Nenhum pedido encontrado.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var pedido in Pedidos)
+            {
+                <div class="col-md-4 mb-3">
+                    <CardPedido Pedido="pedido" OnEditar="EditarPedido" OnRemover="SolicitarRemocao" />
+                </div>
+            }
+        </div>
+    }
+}
+
+<ConfirmacaoModal Visible="@MostrarConfirmacao"
+                  Mensagem="Deseja realmente remover este pedido?"
+                  OnConfirmacao="OnConfirmacaoRemocao" />
+
+@code {
+    private List<Pedido> Pedidos = new();
+    private List<Cliente> Clientes = new();
+    private List<Produto> Produtos = new();
+
+    private Pedido? PedidoEmEdicao;
+    private bool ExibirFormulario = false;
+
+    private bool MostrarConfirmacao = false;
+    private int PedidoIdParaRemover;
+
+    private string? MensagemNotificacao;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarDados();
+    }
+
+    private async Task CarregarDados()
+    {
+        Pedidos = await PedidoService.ObterTodosPedidosAsync();
+        Clientes = await ClienteService.ObterTodosClientesAsync();
+        Produtos = await ProdutoService.ObterTodosProdutosAsync();
+    }
+
+    private void CriarNovoPedido()
+    {
+        PedidoEmEdicao = new Pedido
+        {
+            DataPedido = DateTime.Now,
+            Status = "Pendente"
+        };
+        ExibirFormulario = true;
+    }
+
+    private void EditarPedido(Pedido pedido)
+    {
+        PedidoEmEdicao = new Pedido
+        {
+            Id = pedido.Id,
+            Cliente = pedido.Cliente,
+            DataPedido = pedido.DataPedido,
+            Status = pedido.Status,
+            Itens = new List<ItemPedido>(pedido.Itens.Select(i => new ItemPedido
+            {
+                Id = i.Id,
+                Produto = i.Produto,
+                Quantidade = i.Quantidade
+            }))
+        };
+        ExibirFormulario = true;
+    }
+
+    private async Task SalvarPedido(Pedido pedido)
+    {
+        if (pedido.Id == 0)
+            await PedidoService.AdicionarPedidoAsync(pedido);
+        else
+            await PedidoService.AtualizarPedidoAsync(pedido);
+
+        await CarregarDados();
+        ExibirFormulario = false;
+
+        MensagemNotificacao = "Pedido salvo com sucesso!";
+        await Task.Delay(3000);
+        MensagemNotificacao = null;
+    }
+
+    private void CancelarEdicao()
+    {
+        ExibirFormulario = false;
+    }
+
+    private void SolicitarRemocao(int pedidoId)
+    {
+        PedidoIdParaRemover = pedidoId;
+        MostrarConfirmacao = true;
+    }
+
+    private async Task OnConfirmacaoRemocao(bool confirmado)
+    {
+        MostrarConfirmacao = false;
+
+        if (confirmado)
+        {
+            await PedidoService.RemoverPedidoAsync(PedidoIdParaRemover);
+            await CarregarDados();
+
+            MensagemNotificacao = "Pedido removido com sucesso!";
+            await Task.Delay(3000);
+            MensagemNotificacao = null;
+        }
+    }
+}

@@ -1,0 +1,39 @@
+﻿@page "/cadastrar-produto"
+@using GerenciarProdutos.Models
+@using GerenciarProdutos.Services
+@inject ProdutoService ProdutoService
+
+<h3>Cadastro de Produto</h3>
+
+<EditForm Model="produto" OnValidSubmit="Salvar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Nome</label>
+        <InputText class="form-control" @bind-Value="produto.Nome" />
+    </div>
+
+    <div class="mb-3">
+        <label>Preço</label>
+        <InputNumber class="form-control" @bind-Value="produto.Preco" />
+    </div>
+
+    <div class="mb-3">
+        <label>Categoria</label>
+        <InputText class="form-control" @bind-Value="produto.Categoria" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Salvar</button>
+</EditForm>
+
+@code {
+    private Produto produto = new();
+
+    private void Salvar()
+    {
+        produto.Id = ProdutoService.ObterTodosProdutos().Max(p => p.Id) + 1;
+        ProdutoService.ObterTodosProdutos().Add(produto);
+        produto = new(); // limpa o formulário
+    }
+}

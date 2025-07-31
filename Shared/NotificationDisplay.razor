@@ -1,0 +1,11 @@
+﻿@if (!string.IsNullOrEmpty(Mensagem))
+{
+    <div class="alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999;">
+        @Mensagem
+    </div>
+}
+
+@code {
+    [Parameter] public string Mensagem { get; set; }
+}
+
